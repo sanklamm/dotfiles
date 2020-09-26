@@ -1,0 +1,102 @@
+# vim: ft=muttrc
+
+  set askcc
+unset confirmappend
+  set delete
+  set edit_headers
+#  set editor            = "nvim +:silent+?^$"
+  set editor            = "/usr/bin/nvim %s"
+  set fast_reply
+  set folder            = ~/Maildir
+  set forward_format    = "Fwd: %s"
+  set forward_quote
+  set attribution       = "%n <%a> wrote on %{%a} [%{%Y-%b-%d %H:%M:%S %Z}]:"
+  set header_cache      = ~/.config/neomutt/cache
+unset help
+  set include
+  set index_format      = "%3C %Z %[!%m/%d] %-17.17F %s"
+  set mail_check        = 0
+  set mailcap_path      = ~/.mutt/mailcap
+unset mark_old
+unset markers
+  set mime_forward      = ask-no
+  set mbox_type         = Maildir
+  set menu_scroll
+  set pager_context     = 5
+  set pager_index_lines = 10
+  set pager_stop
+  set pipe_decode
+  set realname          = "Sebastian Anklamm"
+unset record
+  set reply_to
+  set reverse_name
+  set signature         = ~/.mutt/signature
+  set sort              = threads
+  set sort_aux          = reverse-last-date-received
+  set spoolfile         = "+sanklamm/INBOX"
+  set status_chars      = " *%A"
+  set status_format     = "[ Folder: %f ] [%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]%>─%?p?( %p postponed )?"
+  #set status_format=" %r %b %f New:%n Del:%d TotMsgs:%m Tag:%t Flag:%F Size:%l %> Lim:%V (%P)"
+  set date_format       = "%Y-%m-%d %H:%M"
+  set index_format      = "[%Z] %?X?A&-? %D  %-20.20F  %s"
+  set status_format     = "-%r- %f%?t? Tagged:%t?%?p? Drafts:%p? -%>-"
+  set strict_threads
+  set thorough_search
+  set tilde
+  set timeout           = 3
+  set tmpdir            = ~/.mutt/temp
+# sidebar patch config
+  set sidebar_visible
+  set sidebar_short_path
+  set sidebar_folder_indent
+  set sidebar_width = 25
+  set sidebar_divider_char = ' | '
+  set sidebar_indent_string = '  ''
+  set sidebar_format = "%B %* [%?N?%N / ?%S]"
+
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+ignore *
+unignore from: to: cc: date: subject:
+hdr_order from: to: cc: date: subject:
+
+# subscribe arch-announce arch-dev-public arch-haskell aur-general \
+#           commercial-haskell rubyparley vim web-devel xmonad yesod
+
+source ~/.config/neomutt/mutt/dracula.muttrc
+# source ~/.mutt/colors
+source ~/.config/neomutt/mailboxes
+source ~/.config/neomutt/bindings
+# source ~/.mutt/macros
+# source ~/.mutt/gpg
+# source ~/.mutt/hooks
+
+
+# GENERAL SETTINGS
+
+#mailboxes `echo -n "+ "; for file in ~/.mail/*; do box=$(basename "$file"); echo -n "\"+$box\" "; done`
+set attribution="%n <%a> wrote on %{%a} [%{%Y-%b-%d %H:%M:%S %Z}]:"
+#set attribution = "On %d, %n wrote:" # format of quoting header
+
+# status bar, date format, finding stuff etc.
+#set index_format="%4C %Z[%[%a %m/%d %H:%M]] %-16.16L%?X? [%X]? (%?l?%4l&%4c?) %s"
+set uncollapse_jump
+set sort_re
+set reply_regexp = "^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*"
+set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+set send_charset = "utf-8:iso-8859-1:us-ascii"
+set charset = "utf-8"
+
+# when composing emails, use this command to get addresses from
+# the addressbook with khard first, and everything else from mu index
+set query_command = "( khard email --parsable '%s' | sed -n '1!p'; mu cfind --format=mutt-ab '%s' )"
+# And all your other mutt goodies...
+set wait_key = no
+set quit
+set mail_check_stats
+unset move
+unset beep_new
+
+#macro index gi "<change-folder>=inbox<enter>" "Go to inbox"
+#macro index gs "<change-folder>=sent<enter>" "Go to sent mail"

@@ -1,0 +1,14 @@
+# vim: ft=muttrx
+
+set from="sebastian.anklamm@vcat.de"
+set sendmail="/usr/bin/msmtp -a vcat"
+set mbox = "+work/INBOX"
+set postponed="+work/Entw&APw-rfe"
+set record="+work/Gesendete Elemente"
+
+# when composing emails, use this command to get addresses from
+# the addressbook with khard first, and everything else from mu index
+set query_command = "( khard email --parsable '%s' | sed -n '1!p'; mu cfind --format=mutt-ab '%s' )"
+
+macro index ,c "<change-folder>+sanklamm/[Gmail].All Mail<enter>" "change accounts"
+

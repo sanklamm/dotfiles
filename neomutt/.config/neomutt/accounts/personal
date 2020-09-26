@@ -1,0 +1,17 @@
+# vim: ft=muttrx
+
+set from="sanklamm@gmail.com"
+set sendmail="/usr/bin/msmtp -a sanklamm"
+set mbox = "+sanklamm/[Gmail].All Mail"
+set postponed="+sanklamm/[Google Mail].Drafts"
+set record="+sanklamm/[Google Mail].Sent Mail"
+
+# when composing emails, use this command to get addresses from
+# the addressbook with khard first, and everything else from mu index
+set query_command = "( khard email --parsable '%s' | sed -n '1!p'; mu cfind --format=mutt-ab '%s' )"
+
+macro index ,c "<change-folder>+work/INBOX<enter>" "change accounts"
+macro index ,z "<shell-escape>mbsync --pull-new gmail-inbox<enter>" "sync IMAP"
+# macro index D "<save-message>+gmail/trash<enter>" "move message to the trash"
+# macro index S "<save-message>+gmail/spam<enter>"  "mark message as spam"
+

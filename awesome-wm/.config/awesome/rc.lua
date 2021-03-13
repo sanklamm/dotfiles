@@ -57,13 +57,20 @@ local function run_once(cmd_arr)
     end
 end
 
+run_once({ ".screenlayout/home-2d.sh" }) -- load xrandr config
 run_once({ "unclutter -root" }) -- entries must be separated by commas
 run_once({ "nm-applet -sm-disable" })
 run_once({ "dropbox" })
+run_once({ "caffeine" })
 --run_once({ "compton" })
 run_once({ "wmname LG3D" }) -- Fix for java applications
 run_once({ "udiskie -2 -s" }) -- automatic disk (un)mounter
 run_once({ "setxkbmap -option caps:escape" }) -- map CAPSLOCK to ESC key
+run_once({ "flameshot" }) -- screenshot and annotation tool of choice
+run_once({ "redshift-gtk" }) -- adjust color temperature at night
+--run_once({ "sleep 3 && nitrogen --restore" }) -- set Wallpaper
+
+--aweful.spawn.once("slack", { screen = 1 })
 
 -- This function implements the XDG autostart specification
 --[[
@@ -104,17 +111,25 @@ local guieditor    = "code"
 local scrlocker    = "i3lock-fancy"
 
 awful.util.terminal = terminal
-awful.util.tagnames = { " </> ", " emacs ", " >_ ", " # ", " & ", " web ", " etc ", " tmux ", " doc " }
+awful.util.tagnames = { " </> ", " em ", " >_ ", " # ", " & ", " web ", " etc ", " tmux ", " doc " }
 awful.layout.layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     awful.layout.suit.floating,
+    --awful.layout.suit.floating,
+    --awful.layout.suit.floating,
+    --awful.layout.suit.tile.bottom,
+    --awful.layout.suit.floating,
+    --awful.layout.suit.floating,
+    --awful.layout.suit.floating,
+    --awful.layout.suit.floating,
+    --awful.layout.suit.floating,
     lain.layout.centerwork,
     awful.layout.suit.max,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    --awful.layout.suit.fair,
-    --awful.layout.suit.fair.horizontal,
+    awful.layout.suit.fair,
+    awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,
     --awful.layout.suit.spiral.dwindle,
     --awful.layout.suit.max.fullscreen,
@@ -129,6 +144,8 @@ awful.layout.layouts = {
     --lain.layout.termfair,
     --lain.layout.termfair.center,
 }
+
+-- awful.spawn.once("termite", { floating = true, screen = 2, tag = " # " })
 
 awful.util.taglist_buttons = my_table.join(
     awful.button({ }, 1, function(t) t:view_only() end),

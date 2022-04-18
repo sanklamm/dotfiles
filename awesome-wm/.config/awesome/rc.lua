@@ -57,17 +57,17 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ ".screenlayout/home-2d.sh" }) -- load xrandr config
 run_once({ "unclutter -root" }) -- entries must be separated by commas
 run_once({ "nm-applet -sm-disable" })
-run_once({ "dropbox" })
+run_once({ "clipmenud" })
+--run_once({ "dropbox" })
 run_once({ "caffeine" })
 --run_once({ "compton" })
 run_once({ "wmname LG3D" }) -- Fix for java applications
 run_once({ "udiskie -2 -s" }) -- automatic disk (un)mounter
 run_once({ "setxkbmap -option caps:escape" }) -- map CAPSLOCK to ESC key
-run_once({ "flameshot" }) -- screenshot and annotation tool of choice
-run_once({ "redshift-gtk" }) -- adjust color temperature at night
+run_once({ "org.flameshot.Flameshot" }) -- screenshot and annotation tool of choice
+run_once({ ".screenlayout/home-3d.sh" }) -- load xrandr config
 --run_once({ "sleep 3 && nitrogen --restore" }) -- set Wallpaper
 
 --aweful.spawn.once("slack", { screen = 1 })
@@ -102,11 +102,11 @@ local themes = {
 local chosen_theme = themes[6]
 local modkey       = "Mod4"
 local altkey       = "Mod1"
-local terminal     = "termite"
+local terminal     = "alacritty"
 local gnometerminal = "gnome-terminal"
 local editor       = os.getenv("EDITOR") or "vim"
 local gui_editor   = "gvim"
-local browser      = "qutebrowser"
+local browser      = "google-chrome-stable"
 local guieditor    = "code"
 local scrlocker    = "i3lock-fancy"
 
@@ -124,12 +124,12 @@ awful.layout.layouts = {
     --awful.layout.suit.floating,
     --awful.layout.suit.floating,
     --awful.layout.suit.floating,
-    lain.layout.centerwork,
+    --lain.layout.centerwork,
     awful.layout.suit.max,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
+    --awful.layout.suit.fair,
+    --awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,
     --awful.layout.suit.spiral.dwindle,
     --awful.layout.suit.max.fullscreen,
@@ -141,8 +141,8 @@ awful.layout.layouts = {
     --lain.layout.cascade,
     --lain.layout.cascade.tile,
     --lain.layout.centerwork.horizontal,
-    --lain.layout.termfair,
-    --lain.layout.termfair.center,
+    -- lain.layout.termfair,
+    -- lain.layout.termfair.center,
 }
 
 -- awful.spawn.once("termite", { floating = true, screen = 2, tag = " # " })
@@ -525,18 +525,20 @@ globalkeys = my_table.join(
     awful.key({ modkey }, "c", function () awful.spawn.with_shell("xsel | xsel -i -b") end,
               {description = "copy terminal to gtk", group = "hotkeys"}),
     -- Copy clipboard to primary (gtk to terminals)
-    awful.key({ modkey }, "v", function () awful.spawn.with_shell("xsel -b | xsel") end,
+    awful.key({ modkey, "Shift" }, "v", function () awful.spawn.with_shell("xsel -b | xsel") end,
               {description = "copy gtk to terminal", group = "hotkeys"}),
 
     -- User programs
-    awful.key({ modkey }, "q", function () awful.spawn(browser) end,
-              {description = "run browser", group = "launcher"}),
+    --awful.key({ modkey }, "q", function () awful.spawn(browser) end,
+    --          {description = "run browser", group = "launcher"}),
     awful.key({ modkey }, "a", function () awful.spawn(guieditor) end,
               {description = "run gui editor", group = "launcher"}),
 
     -- Default
     --awful.key({ modkey }, "p", function() menubar.show() end,
     --          {description = "show the menubar", group = "launcher"})
+    awful.key({ modkey }, "v", function () awful.util.spawn("/bin/clipmenu") end,
+              {description = "clipboard manager", group = "launcher"}),
     awful.key({ modkey,           }, "p", function () awful.util.spawn("/usr/bin/dmenu_recency")          end,
               {description = "launch dmenu", group = "launcher"})
     --awful.key({ modkey }, "p", function ()

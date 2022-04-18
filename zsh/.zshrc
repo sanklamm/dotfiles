@@ -62,7 +62,7 @@ ZSH_THEME="dracula-pro"
 plugins=(
   git tmux python pip history-substring-search z
   composer copyfile copypath copybuffer cp docker docker-compose man
-  emacs emoji emoji-clock extract fancy-ctrl-z git-flow lein pass pip sudo zsh-nvm
+  emacs emoji emoji-clock extract fancy-ctrl-z git-flow lein pass pip sudo
   vagrant
 )
 

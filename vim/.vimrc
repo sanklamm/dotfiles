@@ -124,3 +124,6 @@ nnoremap ; :CtrlPBuffer<CR>
 " align selected lines on '='
 map <leader>9 :Tabularize/=<cr>
 
+
+" fixes mouse issues using Alacritty
+set ttymouse=sgr

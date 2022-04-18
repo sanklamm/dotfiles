@@ -46,18 +46,23 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-sort-by-usage t
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
+                      auto-completion-private-snippets-directory "~/Sync/100-199 Personal/101 Administration/50-59 Utilities/51 Programme/51.03 Emacs/snippets"
                       :disabled-for org markdown)
-     better-defaults
+     ;; better-defaults
      ;; c-c++
      (clojure :variables
               clojure-enable-fancify-symbols t
               clojure-enable-clj-refactor t)
+              ;; clojure-backend 'cider
+              
      colors
      csv
      ;; deft
      ;; django
+     d
      docker
      emacs-lisp
+     emoji
      ;; (erc :variables
      ;;      erc-server-list
      ;;      '(("irc.freenode.net"
@@ -82,11 +87,13 @@ This function should only modify configuration layer settings."
                  js2-basic-offset 2
                  js-indent-level 2)
      json
-     lsp
+     (lsp :variables
+          lsp-enable-on-type-formatting nil
+          lsp-enable-indentation nil)
      ;; bibtex
      (latex :variables latex-build-command "LaTeX")
      ;; ;; pdf-tools
-     ;; lua
+     lua
      markdown
      ;; (mu4e :variables
      ;;       user-full-name  "Sebastian Anklamm"
@@ -112,10 +119,11 @@ This function should only modify configuration layer settings."
           org-enable-reveal-js-support t
           org-enable-hugo-support t
           org-enable-org-journal-support t
-          org-projectile-file "TODOs.org"
-          )
+          org-enable-roam-support t
+          org-projectile-file "TODOs.org")
+          
      parinfer
-     pdf
+     ;; pdf
      php
      (python :variables python-test-runner 'pytest)
      ;; ;; (ranger :variables
@@ -127,6 +135,7 @@ This function should only modify configuration layer settings."
      react
      restclient
      restructuredtext
+     ruby
      scheme
      semantic
      (shell :variables
@@ -139,18 +148,19 @@ This function should only modify configuration layer settings."
      themes-megapack
      treemacs
      typescript
-     typography
-     ;; (version-control :variables
-     ;;                  version-control-diff-side 'left
-     ;;                  version-control-global-margin t)
+     ;; typography
+     vagrant
+     (version-control :variables
+                      version-control-diff-side 'left
+                      version-control-global-margin t)
      (vue :variables
           vue-backend 'lsp
-          javascript-fmt-on-save t
-          )
+          javascript-fmt-on-save t)
+          
      ;; windows-scripts
      ;; xkcd
      yaml
-     vimscript
+     ;; vimscript
      )
 
 
@@ -166,6 +176,9 @@ This function should only modify configuration layer settings."
    '(
      beacon
      org-tree-slide
+     org-noter
+     ;; org-noter-pdftools
+     ;; popper
      )
 
    ;; A list of packages that cannot be updated.
@@ -276,7 +289,7 @@ It should only modify the values of Spacemacs settings."
    ;; directory. A string value must be a path to an image format supported
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
-   dotspacemacs-startup-banner nil
+   dotspacemacs-startup-banner 'nil
 
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
@@ -288,12 +301,22 @@ It should only modify the values of Spacemacs settings."
    ;; pair of numbers, e.g. `(recents-by-project . (7 .  5))', where the first
    ;; number is the project limit and the second the limit on the recent files
    ;; within a project.
-   dotspacemacs-startup-lists '((recents . 5)
+   dotspacemacs-startup-lists '(
+                                (agenda . 5)
+                                (todos . 5)
+                                (recents . 5)
+                                (projects . 7)
                                 (bookmarks . 5)
-                                (projects . 7))
+                                )
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
+
+   ;; Show numbers before the startup list lines. (default t)
+   dotspacemacs-show-startup-list-numbers t
+
+   ;; The minimum delay in seconds between number key presses. (default 0.4)
+   dotspacemacs-startup-buffer-multi-digit-delay 0.4
 
    ;; Default major mode for a new empty buffer. Possible values are mode
    ;; names such as `text-mode'; and `nil' to use Fundamental mode.
@@ -305,11 +328,11 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, *scratch* buffer will be persistent. Things you write down in
    ;; *scratch* buffer will be saved and restored automatically.
-   dotspacemacs-scratch-buffer-persistent nil
+   dotspacemacs-scratch-buffer-persistent t
 
    ;; If non-nil, `kill-buffer' on *scratch* buffer
    ;; will bury it instead of killing.
-   dotspacemacs-scratch-buffer-unkillable nil
+   dotspacemacs-scratch-buffer-unkillable t
 
    ;; Initial message in the scratch buffer, such as "Welcome to Spacemacs!"
    ;; (default nil)
@@ -496,6 +519,10 @@ It should only modify the values of Spacemacs settings."
    ;; when it reaches the top or bottom of the screen. (default t)
    dotspacemacs-smooth-scrolling t
 
+   ;; Show the scroll bar while scrolling. The auto hide time can be configured
+   ;; by setting this variable to a number. (default t)
+   dotspacemacs-scroll-bar-while-scrolling nil
+
    ;; Control line numbers activation.
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
    ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
@@ -523,15 +550,21 @@ It should only modify the values of Spacemacs settings."
                                org-mode
                                pdf-view-mode
                                text-mode
-                               :size-limit-kb 500)
+                               :size-limit-kb 500
+                               )
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
 
-   ;; If non-nil `smartparens-strict-mode' will be enabled in programming modes.
+   ;; If non-nil and `dotspacemacs-activate-smartparens-mode' is also non-nil,
+   ;; `smartparens-strict-mode' will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
+
+   ;; If non-nil smartparens-mode will be enabled in programming modes.
+   ;; (default t)
+   dotspacemacs-activate-smartparens-mode t
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc...
@@ -579,6 +612,9 @@ It should only modify the values of Spacemacs settings."
    ;; %n - Narrow if appropriate
    ;; %z - mnemonics of buffer, terminal, and keyboard coding systems
    ;; %Z - like %z, but including the end-of-line format
+   ;; If nil then Spacemacs uses default `frame-title-format' to avoid
+   ;; performance issues, instead of calculating the frame title by
+   ;; `spacemacs/title-prepare' all the time.
    ;; (default "%I@%S")
    dotspacemacs-frame-title-format "%I@%S"
 
@@ -602,6 +638,9 @@ It should only modify the values of Spacemacs settings."
    ;; If it does deactivate it here.
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
+
+   ;; Accept SPC as y for prompts if non nil. (default nil)
+   dotspacemacs-use-SPC-as-y nil
 
    ;; If non-nil shift your number row to match the entered keyboard layout
    ;; (only in insert state). Currently supported keyboard layouts are:
@@ -644,14 +683,16 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (setq byte-compile-warnings '(cl-functions))
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
   (setq exec-path (append exec-path '("/usr/local/bin")))
+  (setq org-roam-v2-ack t)
   )
+
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
+
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -659,6 +700,21 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
+  ;; popper.el
+  ;; (use-package popper
+  ;;   :ensure t ; or :straight t
+  ;;   :bind (("C-´"   . popper-toggle-latest)
+  ;;          ("M-´"   . popper-cycle)
+  ;;          ("C-M-´" . popper-toggle-type))
+  ;;   :init
+  ;;   (setq popper-reference-buffers
+  ;;         '("\\*Messages\\*"
+  ;;           "Output\\*$"
+  ;;           ;; "\\*Org"
+  ;;           help-mode
+  ;;           compilation-mode))
+  ;;   (popper-mode +1))
 
   ;; don't create those pesky .#files
   (setq create-lockfiles nil)
@@ -677,21 +733,36 @@ before packages are loaded."
   ;; (setq load-path (cons "~/Sync/100-199 Personal/101 Administration/50-59 Utilities/51 Programme/51.03 Emacs/org-fstree" load-path))
   ;; (require 'org-fstree)
 
-  (setq paradox-github-token "ea87c4112590da92cd1d63d263d1e0e46a568b88")
+  ;; (setq paradox-github-token "ea87c4112590da92cd1d63d263d1e0e46a568b88")
 
   (beacon-mode 1)
 
   ;; org-noter
-  (setq org-noter-default-notes-file-names '("pdf-notes.org")
-        org-noter-notes-search-path '("~/Sync/100-199 Personal/101 Administration/00-09 Meta/pdf-notes/notes"))
+  ;; currently does not work due to broken pdftools
+  ;; (use-package org-noter
+  ;;   :after (:any org pdf-view)
+  ;;   :custom (org-noter-always-create-frame t))
 
-  (add-hook 'Info-mode-hook    ; After Info-mode has started
-            (lambda ()
-              (setq Info-additional-directory-list Info-default-directory-list)))
+  ;; (setq org-noter-default-notes-file-names '("pdf-notes.org")
+  ;;       org-noter-notes-search-path '("~/Sync/100-199 Personal/101 Administration/00-09 Meta/pdf-notes/notes"))
 
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-        TeX-source-correlate-start-server t)
+  ;; (add-hook 'Info-mode-hook    ; After Info-mode has started
+  ;;           (lambda ()
+  ;;             (setq Info-additional-directory-list Info-default-directory-list)))
+
+  ;; (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+  ;;       TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+  ;;       TeX-source-correlate-start-server t)
+
+  ;; (use-package org-pdftools
+  ;;   :hook (org-load . org-pdftools-setup-link))
+
+  ;; (use-package org-noter-pdftools
+  ;;   :after org-noter
+  ;;   :config
+  ;;   (with-eval-after-load 'pdf-annot
+  ;;     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+  ;; end of org-noter config
 
   (setq-default
    ;;;; Editing
@@ -700,6 +771,10 @@ before packages are loaded."
 
   ;; LaTeX
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+
+  ;; org-roam
+  (setq org-roam-directory (file-truename "~/Sync/100-199 Personal/101 Administration/00-09 Meta/OrgRoam"))
+
 
   ;; deft
   (setq
@@ -839,8 +914,8 @@ before packages are loaded."
   (define-key org-mode-map (kbd "S-<f8>") 'org-tree-slide-skip-done-toggle)
   (with-eval-after-load "org-tree-slide"
     (define-key org-tree-slide-mode-map (kbd "<f9>") 'org-tree-slide-move-previous-tree)
-    (define-key org-tree-slide-mode-map (kbd "<f10>") 'org-tree-slide-move-next-tree)
-    )
+    (define-key org-tree-slide-mode-map (kbd "<f10>") 'org-tree-slide-move-next-tree))
+  
   
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
@@ -852,21 +927,24 @@ before packages are loaded."
   (with-eval-after-load 'org
     (setq org-babel-python-command "python3")
     (setq org-agenda-files (list
-                            "~/Dropbox/org/notes/0.inbox.org"
-                            "~/Dropbox/org/notes/1.work.org"
-                            "~/Dropbox/org/notes/2.meeting.org"
-                            "~/Dropbox/org/notes/3.notes.org"
-                            "~/Dropbox/org/notes/4.personal.org"
-                            "~/Dropbox/org/notes/deep_work.org"))
+                            "~/Sync/200-299 VCAT/200 INDEX.org"))
+    ;; "~/Dropbox/org/notes/0.inbox.org"
+    ;; "~/Dropbox/org/notes/1.work.org"
+    ;; "~/Dropbox/org/notes/2.meeting.org"
+    ;; "~/Dropbox/org/notes/3.notes.org"
+    ;; "~/Dropbox/org/notes/4.personal.org"
+    ;; "~/Dropbox/org/notes/deep_work.org"
+    
     
     (setq org-todo-keywords
-          '((sequence "TODO(t)" "DOING" "BLOCKED(b@/!)" "REVIEW(r@/!)" "|" "DONE(d)" "DELEGATED(w@/!)")
+          '((sequence "TODO(t)" "NEXT(n)" "DOING" "BLOCKED(b@/!)" "REVIEW(r@/!)" "|" "DONE(d)" "DELEGATED(w@/!)")
             (sequence "|" "CANCELLED(c@/!)" "BACKLOG(l@/!)" "MEETING")
             (sequence "PROJECT")))
     
     (setq org-todo-keyword-faces
           '(
             ("TODO" . "SlateGrey")
+            ("NEXT" . "org-warning")
             ("PROJECT" . "SlateGrey")
             ("MEETING" . "SlateGrey")
             ("DOING" . "DarkOrchid")
@@ -904,6 +982,7 @@ before packages are loaded."
        (js . t)
        (clojure . t)
        (scheme . t)
+       (sql . t)
        (java . t)
        (php . t)
        (plantuml . t)))
@@ -945,6 +1024,7 @@ before packages are loaded."
 
   )
 
+
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
 (defun dotspacemacs/emacs-custom-settings ()
@@ -959,11 +1039,26 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
-   '(nix-mode helm-nixos-options company-nixos-options nixos-options xterm-color vterm terminal-here shell-pop multi-term eshell-z eshell-prompt-extras esh-help restclient-helm ob-restclient ob-http company-restclient restclient know-your-http-well yapfify web-mode typo tagedit stickyfunc-enhance srefactor sql-indent sphinx-doc slim-mode scss-mode sass-mode rjsx-mode rainbow-mode rainbow-identifiers pytest pyenv-mode py-isort pug-mode poetry pippel pipenv pyvenv pip-requirements phpunit php-extras pdf-tools parinfer mmm-mode markdown-toc lsp-ui lsp-treemacs lsp-python-ms lsp-pyright lsp-origami origami lsp-latex live-py-mode importmagic epc ctable concurrent deferred impatient-mode helm-pydoc helm-lsp lsp-mode dash-functional helm-gtags helm-css-scss helm-cider haml-mode gh-md ggtags geiser geben flycheck-pos-tip emmet-mode drupal-mode dockerfile-mode docker tablist docker-tramp cython-mode csv-mode company-web web-completion-data company-reftex company-phpactor phpactor composer php-runtime company-php ac-php-core xcscope php-mode company-math math-symbol-lists company-auctex company-anaconda color-identifiers-mode clojure-snippets clj-refactor inflections cider-eval-sexp-fu cider sesman seq queue parseedn clojure-mode parseclj a blacken auctex anaconda-mode pythonic zenburn-theme zen-and-art-theme white-sand-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme rebecca-theme railscasts-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme modus-vivendi-theme modus-operandi-theme minimal-theme material-theme majapahit-theme madhat2r-theme lush-theme light-soap-theme kaolin-themes jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme farmhouse-theme eziam-theme exotica-theme espresso-theme dracula-theme doom-themes django-theme darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme chocolate-theme autothemer cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme org-tree-slide beacon treemacs-magit toc-org smeargle ox-twbs ox-hugo ox-gfm orgit org-superstar org-rich-yank org-re-reveal org-present org-pomodoro alert log4e gntp org-mime org-journal org-download org-cliplink org-brain magit-svn magit-section magit-gitflow magit-popup htmlize helm-org-rifle helm-gitignore request helm-git-grep gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link forge markdown-mode magit ghub closql emacsql-sqlite emacsql treepy git-commit with-editor transient evil-org org-plus-contrib yasnippet-snippets yaml-mode web-beautify vimrc-mode unfill tide typescript-mode prettier-js npm-mode nodejs-repl mwim livid-mode skewer-mode simple-httpd json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jinja2-mode helm-company helm-c-yasnippet fuzzy dactyl-mode company-statistics company-quickhelp pos-tip company-ansible company auto-yasnippet yasnippet ansible-doc ansible ac-ispell auto-complete which-key use-package treemacs-projectile treemacs-icons-dired treemacs-evil pcre2el overseer nameless macrostep hybrid-mode helm-xref helm-themes helm-swoop helm-projectile helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag flycheck-package flycheck-elsa evil-mc emr elisp-slime-nav dotenv-mode diminish bind-map auto-compile ace-jump-helm-line)))
+   '(company-lua lua-mode vagrant-tramp vagrant seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake minitest enh-ruby-mode counsel-gtags counsel swiper chruby bundler inf-ruby add-node-modules-path org-roam dap-mode bui zenburn-theme zen-and-art-theme yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum white-sand-theme which-key web-mode web-beautify vterm volatile-highlights vi-tilde-fringe uuidgen use-package unkillable-scratch undo-tree underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil toxi-theme toc-org tide terminal-here tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit symon symbol-overlay sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection string-edit stickyfunc-enhance srefactor sql-indent sphinx-doc spaceline-all-the-icons spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode shell-pop seti-theme scss-mode sass-mode rjsx-mode reverse-theme restclient-helm restart-emacs rebecca-theme rainbow-mode rainbow-identifiers rainbow-delimiters railscasts-theme quickrun pytest pyenv-mode py-isort purple-haze-theme pug-mode professional-theme prettier-js popwin poetry planet-theme pippel pipenv pip-requirements phpunit phpcbf php-extras php-auto-yasnippets phoenix-dark-pink-theme phoenix-dark-mono-theme persistent-scratch pcre2el password-generator parinfer-rust-mode paradox ox-twbs ox-hugo ox-gfm overseer orgit-forge organic-green-theme org-tree-slide org-superstar org-rich-yank org-re-reveal org-projectile org-present org-pomodoro org-noter org-mime org-journal org-download org-contrib org-cliplink org-brain open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme ob-restclient ob-http npm-mode nose nodejs-repl noctilux-theme nix-mode naquadah-theme nameless mustang-theme multi-term multi-line monokai-theme monochrome-theme molokai-theme moe-theme modus-vivendi-theme modus-operandi-theme mmm-mode minimal-theme material-theme markdown-toc majapahit-theme magit-section madhat2r-theme macrostep lush-theme lsp-ui lsp-treemacs lsp-python-ms lsp-pyright lsp-origami lsp-latex lorem-ipsum livid-mode live-py-mode link-hint light-soap-theme kaolin-themes json-navigator js2-refactor js-doc jinja2-mode jbeans-theme jazz-theme ir-black-theme inkpot-theme indent-guide importmagic impatient-mode hybrid-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-org helm-nixos-options helm-mode-manager helm-make helm-lsp helm-ls-git helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-cider helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags geiser geben gandalf-theme fuzzy font-lock+ flycheck-pos-tip flycheck-package flycheck-elsa flx-ido flatui-theme flatland-theme farmhouse-theme fancy-battery eziam-theme eyebrowse expand-region exotica-theme evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu espresso-theme eshell-z eshell-prompt-extras esh-help emr emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode drag-stuff dracula-theme dotenv-mode doom-themes doom-modeline dockerfile-mode docker django-theme dired-quick-sort diminish define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cython-mode cyberpunk-theme csv-mode company-web company-statistics company-restclient company-reftex company-quickhelp company-phpactor company-php company-nixos-options company-math company-emoji company-auctex company-ansible company-anaconda column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-identifiers-mode clues-theme clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu chocolate-theme cherry-blossom-theme centered-cursor-mode busybee-theme bubbleberry-theme blacken birds-of-paradise-plus-theme beacon badwolf-theme auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme anti-zenburn-theme ansible-doc ansible ample-zen-theme ample-theme alect-themes aggressive-indent afternoon-theme ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ 
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ 
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ 
 )

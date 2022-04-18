@@ -7,8 +7,8 @@
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
-#ZSH_THEME="dracula-pro"
+# ZSH_THEME="robbyrussell"
+ZSH_THEME="dracula-pro"
 
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
@@ -154,20 +154,6 @@ alias ec="emacsclient -c"
 ff() { fzf | xargs -r -I % $EDITOR % ; }
 fp() { du -a ~/PhpstormProjects/* | grep .php$ | awk '{print $2}' | fzf | xargs -r $EDITOR ; }
 
-# opam configuration
-test -r /home/sean/.opam/opam-init/init.zsh && . /home/sean/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-
-fortune vimtips | lolcat
-echo ""
-
-# Nice Greetings
-# niceThings=('you look lovely today' 'you are so smart' 'I think you are fantastic' 'You are super creative' 'You can do anything' 'You write KICKASS code' 'Your hair looks amazing today' 'You inspire soooo many people' 'You are a strong powerful woman');
-# 
-# emojis=('ʕᵔᴥᵔʔ' '(｡◕‿◕｡)' '( ˘ ³˘)♥' 'ฅ^•ﻌ•^ฅ' '(づ￣ ³￣)づ' '┌(ㆆ㉨ㆆ)ʃ' '“ヽ(´▽｀)ノ”' '♥‿♥' 'ᕕ( ᐛ )ᕗ' '(ᵔᴥᵔ)')
-# 
-# index=$(( RANDOM % ${#niceThings[@]} ))
-# echo ${emojis[${index}]} ${niceThings[${index}]}
-
 # fzf options
 # Use fd to generate the list for directory completion
 _fzf_compgen_dir() {
@@ -194,10 +180,4 @@ _fzf_comprun() {
   esac
 }
 
-source /home/sean/.config/broot/launcher/bash/br
-
-
 export FZF_DEFAULT_OPTS='--preview "bat --style=numbers --color=always --line-range :500 {}"'
-
-export MANPAGER="nvim -c 'set ft=man' -"
-export BROWSER=/usr/bin/google-chrome-stable
